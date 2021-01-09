@@ -1,14 +1,12 @@
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 
+import { MetaInfo } from "../components";
+
 export default function Home() {
   return (
     <div>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
+      <MetaInfo title="Home" />
       <h1>Home Page</h1>
     </div>
   );

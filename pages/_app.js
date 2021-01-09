@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { useRouter } from "next/router";
 
 import { Layout } from "../components";
-import { Spinner } from "../components";
+import { Spinner, MetaInfo } from "../components";
 import { theme } from "../utility";
 
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -49,7 +49,10 @@ function MyApp({ Component, pageProps }) {
         <StylesProvider injectFirst>
           <CssBaseline />
           {loading ? (
-            <Spinner />
+            <>
+              <MetaInfo title="University" />
+              <Spinner />
+            </>
           ) : (
             <Layout>
               <CssBaseline />
