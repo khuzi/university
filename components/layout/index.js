@@ -18,6 +18,7 @@ const useStyles = makeStyles({
   children: {
     maxWidth: "1200px",
     margin: "auto",
+    padding: "0.5rem",
   },
 });
 

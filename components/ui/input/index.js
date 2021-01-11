@@ -8,8 +8,8 @@ const useStyles = makeStyles((theme) => ({
       maxWidth: 200,
     },
     [theme.breakpoints.down("sm")]: {
+      margin: "0 0.5rem",
       marginBottom: "1rem",
-      marginLeft: "1rem",
     },
   },
   label: {
@@ -31,6 +31,7 @@ export function Input({ placeholder, label }) {
         size="small"
         placeholder={placeholder}
         multiline
+        required
       />
     </div>
   );
