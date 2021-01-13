@@ -1,4 +1,5 @@
 import React from "react";
+
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 
@@ -20,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export function Input({ placeholder, label }) {
+export function Input({ placeholder, label, setFunc }) {
   const classes = useStyles();
   return (
     <div className={classes.root} noValidate autoComplete="off">
@@ -32,6 +33,7 @@ export function Input({ placeholder, label }) {
         placeholder={placeholder}
         multiline
         required
+        onChange={(e) => setFunc(e.target.value)}
       />
     </div>
   );

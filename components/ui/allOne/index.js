@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useContext, useState } from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -7,6 +7,8 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Select from "@material-ui/core/Select";
 import Checkbox from "@material-ui/core/Checkbox";
 import Chip from "@material-ui/core/Chip";
+
+import { HomeContext } from "../../../context/home";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -18,6 +20,10 @@ const useStyles = makeStyles((theme) => ({
   },
   chip: {
     margin: 2,
+    whiteSpace: "nowarp",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    width: "70px",
   },
 }));
 
@@ -27,30 +33,33 @@ const MenuProps = {
   PaperProps: {
     style: {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
+      minWidth: 260,
     },
   },
 };
 
-const names = [
-  "Oliver Hansen",
-  "Van Henry",
-  "April Tucker",
-  "Ralph Hubbard",
-  "Omar Alexander",
-  "Carlos Abbott",
-  "Miriam Wagner",
-  "Bradley Wilkerson",
-  "Virginia Andrews",
-  "Kelly Snyder",
-];
-
 export function AllOne({ label }) {
   const classes = useStyles();
-  const [personName, setPersonName] = React.useState([]);
+
+  const [selectAll, setSelectAll] = useState(false);
+  const { allOneData, university, setUniversity, setCity } = useContext(
+    HomeContext
+  );
 
   const handleChange = (event) => {
-    setPersonName(event.target.value);
+    setUniversity(event.target.value);
+    allOneData.forEach((e) => {
+      if (e["School Name"] === event.target.value[0]) {
+        setCity(e.City);
+      }
+    });
+  };
+
+  const onSelectAll = () => {
+    setTimeout(() => {
+      setUniversity(allOneData);
+      setSelectAll((prev) => !prev);
+    }, 2);
   };
 
   return (
@@ -67,10 +76,10 @@ export function AllOne({ label }) {
       </label>
       <FormControl className={classes.formControl}>
         <Select
-          style={{ height: 40 }}
+          style={{ minHeight: 40 }}
           variant="outlined"
           multiple
-          value={personName}
+          value={university}
           onChange={handleChange}
           renderValue={(selected) => (
             <div className={classes.chips}>
@@ -82,15 +91,23 @@ export function AllOne({ label }) {
           MenuProps={MenuProps}
         >
           <MenuItem>
-            <Checkbox />
-            <ListItemText primary="Select All" />
+            <Checkbox checked={selectAll} onClick={onSelectAll} />
+            <p style={{ fontSize: "12px" }}>Select All</p>
           </MenuItem>
-          {names.map((name) => (
-            <MenuItem key={name} value={name}>
-              <Checkbox checked={personName.indexOf(name) > -1} />
-              <ListItemText primary={name} />
-            </MenuItem>
-          ))}
+          {allOneData?.map((item, i) => {
+            return (
+              <MenuItem key={i} value={item["School Name"]}>
+                <Checkbox
+                  checked={university.indexOf(item["School Name"]) > -1}
+                />
+                <ListItemText
+                  primary={
+                    <p style={{ fontSize: "12px" }}>{item["School Name"]}</p>
+                  }
+                />
+              </MenuItem>
+            );
+          })}
         </Select>
       </FormControl>
     </div>

@@ -1,5 +1,4 @@
-import React from "react";
-import styles from "../styles/Home.module.css";
+import React, { useContext } from "react";
 
 import { Grid } from "@material-ui/core";
 
@@ -7,21 +6,44 @@ import {
   MetaInfo,
   Input,
   MultipleSelect,
-  SingleSelect,
   AllOne,
+  Left,
+  Right,
 } from "../components";
 
+import { criteria, termins } from "../data";
+
+import { HomeContext } from "../context/home";
+
+import styles from "../styles/Home.module.css";
+
 export default function Home() {
+  const {
+    setProgram,
+    setPoints,
+    setUniversity,
+    setCriteria,
+    setTermins,
+  } = useContext(HomeContext);
+
   return (
     <>
       <MetaInfo title="Home" />
       <form>
         <Grid container>
           <Grid item lg={4} md={4} xs={6}>
-            <Input label="Program name:" placeholder="free text" />
+            <Input
+              label="Program name:"
+              placeholder="free text"
+              setFunc={setProgram}
+            />
           </Grid>
           <Grid item lg={4} md={4} xs={6}>
-            <Input label="Your Grade:" placeholder="Enter Points" />
+            <Input
+              label="Your Grade:"
+              placeholder="Enter Points"
+              setFunc={setPoints}
+            />
           </Grid>
         </Grid>
         <br />
@@ -30,10 +52,18 @@ export default function Home() {
             <AllOne label="University/College" />
           </Grid>
           <Grid item lg={4} md={4} xs={6}>
-            <MultipleSelect label="Criteria:" />
+            <MultipleSelect
+              label="Criteria:"
+              data={criteria}
+              setFunc={setCriteria}
+            />
           </Grid>
           <Grid item lg={4} md={4} xs={6}>
-            <SingleSelect label="Termin Selection:" />
+            <MultipleSelect
+              label="Termin Selection:"
+              data={termins}
+              setFunc={setTermins}
+            />
           </Grid>
         </Grid>
         <Grid container justify="center">
@@ -48,64 +78,19 @@ export default function Home() {
       <div className={styles.divider} />
       <Grid container className={styles.result_box}>
         <Grid item xs={6}>
-          <div className={styles.left}>
-            <Grid container item xs={12}>
-              <Grid item xs={6}>
-                University:
-              </Grid>
-              <Grid item xs={6}>
-                xxxxxxxx
-              </Grid>
-            </Grid>
-            <Grid container item xs={12}>
-              <Grid item xs={6}>
-                City:
-              </Grid>
-              <Grid item xs={6}>
-                xxxxxxxx
-              </Grid>
-            </Grid>
-          </div>
-          <div className={styles.left}>
-            <Grid container item xs={12}>
-              <Grid item xs={6}>
-                Education Name:
-              </Grid>
-              <Grid item xs={6}>
-                xxxxxxxx
-              </Grid>
-            </Grid>
-            <Grid container item xs={12}>
-              <Grid item xs={6}>
-                Education Code:
-              </Grid>
-              <Grid item xs={6}>
-                xxxxxxxx
-              </Grid>
-            </Grid>
-          </div>
+          <Left
+            university="uni"
+            city="city"
+            edu_code="edu_code"
+            edu_name="edu_name"
+          />
         </Grid>
         <Grid item xs={6}>
-          <Grid container>
-            <Grid container item xs={6} justify="space-around">
-              <p>Criteria:</p>
-              <p>xxxxx</p>
-            </Grid>
-            <Grid container item xs={6} justify="space-around">
-              <p>Require Points:</p>
-              <p>xxxxx</p>
-            </Grid>
-          </Grid>
-          <Grid container>
-            <Grid container item xs={6} justify="space-around">
-              <p>Criteria:</p>
-              <p>xxxxx</p>
-            </Grid>
-            <Grid container item xs={6} justify="space-around">
-              <p>Require Points:</p>
-              <p>xxxxx</p>
-            </Grid>
-          </Grid>
+          {Array(8)
+            .fill({ cri: "cri", points: "points" })
+            .map(({ cri, points }, i) => (
+              <Right key={i} criteria={cri} points={points} />
+            ))}
         </Grid>
       </Grid>
     </>

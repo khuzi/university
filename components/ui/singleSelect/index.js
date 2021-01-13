@@ -1,7 +1,7 @@
 import React from "react";
 import Select from "react-select";
 
-import { colourOptions } from "../../../data";
+import { criteria } from "../../../data";
 
 export const SingleSelect = ({ label }) => (
   <div style={{ width: "200px" }}>
@@ -15,6 +15,6 @@ export const SingleSelect = ({ label }) => (
     >
       {label}
     </label>
-    <Select label="Single select" options={colourOptions} />
+    <Select label="Single select" options={criteria} />
   </div>
 );
