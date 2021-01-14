@@ -1,5 +1,5 @@
 .submit input,
-.clear button {
+.clear input {
   background: var(--primary-color);
   border: none;
   outline: none;

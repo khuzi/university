@@ -8,6 +8,8 @@ import Select from "@material-ui/core/Select";
 import Checkbox from "@material-ui/core/Checkbox";
 import Chip from "@material-ui/core/Chip";
 
+import { uni_dropdown } from "../../../queries";
+
 import { HomeContext } from "../../../context/home";
 
 const useStyles = makeStyles((theme) => ({
@@ -41,10 +43,16 @@ const MenuProps = {
 export function AllOne({ label }) {
   const classes = useStyles();
 
+  const [allOneData, setAllOneData] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
-  const { allOneData, university, setUniversity, setCity } = useContext(
-    HomeContext
-  );
+  const { university, setUniversity, setCity } = useContext(HomeContext);
+
+  useEffect(() => {
+    uni_dropdown(setAllOneData);
+    if (!selectAll) {
+      setUniversity([]);
+    }
+  }, [selectAll]);
 
   const handleChange = (event) => {
     setUniversity(event.target.value);
@@ -57,8 +65,10 @@ export function AllOne({ label }) {
 
   const onSelectAll = () => {
     setTimeout(() => {
-      setUniversity(allOneData);
+      const allSchools = allOneData.map((item) => item["School Name"]);
+      setUniversity(allSchools);
       setSelectAll((prev) => !prev);
+      setCity("Stockholm");
     }, 2);
   };
 

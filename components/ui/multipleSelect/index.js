@@ -1,6 +1,7 @@
 import React from "react";
 
 import Select from "react-select";
+import { criteria } from "../../../data";
 
 export const MultipleSelect = ({ label, data, setFunc }) => {
   const onSetValues = (items) => {
