@@ -10,8 +10,6 @@ import { theme } from "../utility";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { ThemeProvider, StylesProvider } from "@material-ui/core/styles";
 
-import HomeContext from "../context/home";
-
 import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }) {
@@ -56,12 +54,10 @@ function MyApp({ Component, pageProps }) {
               <Spinner />
             </>
           ) : (
-            <HomeContext>
-              <Layout>
-                <CssBaseline />
-                <Component {...pageProps} />
-              </Layout>
-            </HomeContext>
+            <Layout>
+              <CssBaseline />
+              <Component {...pageProps} />
+            </Layout>
           )}
         </StylesProvider>
       </ThemeProvider>

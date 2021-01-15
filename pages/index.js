@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Grid } from "@material-ui/core";
 
@@ -6,80 +6,107 @@ import {
   MetaInfo,
   Input,
   MultipleSelect,
-  AllOne,
   Left,
   Right,
+  SingleSelect,
 } from "../components";
 
-import { criteria as static_cri, termins as static_termin } from "../data";
+import { criteria as cri_dropdown, termins as termin_dropdown } from "../data";
 
-import {
-  all_param_fetch,
-  point_param_empty,
-  criteria_param_empty,
-  all_schools,
-  all_termins,
-} from "../queries";
-
-import { HomeContext } from "../context/home";
+import { fetch_result } from "../queries";
 
 import styles from "../styles/Home.module.css";
 
-export default function Home() {
+export default function Home({ all_unis }) {
+  const [city, setCity] = useState();
+  const [program, setProgram] = useState();
+  const [points, setPoints] = useState();
+  const [uni, setUni] = useState([]);
+  const [criteria, setCriteria] = useState();
+  const [termins, setTermins] = useState();
+  const [unis, setUnis] = useState([]);
   const [result, setResult] = useState([]);
-  const {
-    setProgram,
-    setPoints,
-    setCriteria,
-    setTermins,
-    setUniversity,
-    university,
-    program,
-    points,
-    criteria,
-    termins,
-    city,
-  } = useContext(HomeContext);
 
-  const onSubmit = (e) => {
+  useEffect(() => {
+    addAllUnis();
+  }, []);
+
+  const addAllUnis = () => {
+    const allUniversities = all_unis.map((item, i) => {
+      if (i === 0) {
+        return {
+          label: "All Universities",
+          value: "allUnis",
+        };
+      } else {
+        return {
+          label: item["School Name"],
+          value: item["School Name"],
+        };
+      }
+    });
+    setUnis(allUniversities);
+  };
+
+  const onSubmitHandler = (e) => {
     e.preventDefault();
-    if (
-      (program,
-      criteria.length > 0,
-      points,
-      university,
-      termins && university.length === 1)
-    ) {
-      all_param_fetch(
+
+    if (!points) {
+      fetch_result(
         criteria,
         program,
         points,
-        university,
+        uni,
         termins,
+        "points_left",
         setResult
       );
-    } else if (!termins && university.length === 1) {
-      point_param_empty(criteria, program, university, termins, setResult);
     } else if (!criteria) {
-      criteria_param_empty(
-        city,
+      fetch_result(
+        criteria,
         program,
         points,
-        university,
+        uni,
         termins,
+        "criteria_left",
         setResult
       );
-    } else if (university.length === 38 && city === "Stockholm") {
-      all_schools(city, criteria, program, points, termins, setResult);
-    } else if (termins.length === 2 && university.length === 1) {
-      all_termins(city, criteria, program, points, setResult);
+    } else if (uni === "allUnis") {
+      fetch_result(
+        criteria,
+        program,
+        points,
+        uni,
+        termins,
+        "all_unis",
+        setResult
+      );
+    } else if (termins.length === 2) {
+      fetch_result(
+        criteria,
+        program,
+        points,
+        uni,
+        termins,
+        "all_termins",
+        setResult
+      );
+    } else {
+      fetch_result(
+        criteria,
+        program,
+        points,
+        uni,
+        termins,
+        "all_param",
+        setResult
+      );
     }
   };
 
-  const onReset = () => {
-    setProgram(null);
-    setUniversity([]);
-  };
+  useEffect(() => {
+    console.log("Result = ", result);
+  }, [result]);
 
   return (
     <>
@@ -104,29 +131,38 @@ export default function Home() {
         <br />
         <Grid container>
           <Grid item lg={4} md={4} xs={6}>
-            <AllOne label="University/College" />
+            <SingleSelect
+              label="University:"
+              data={unis}
+              placeholder="Select University"
+              mainData={all_unis}
+              setCity={setCity}
+              setUni={setUni}
+            />
           </Grid>
           <Grid item lg={4} md={4} xs={6}>
             <MultipleSelect
               label="Criteria:"
-              data={static_cri}
+              data={cri_dropdown}
               setFunc={setCriteria}
+              placeholder="Enter Criteria"
             />
           </Grid>
           <Grid item lg={4} md={4} xs={6}>
             <MultipleSelect
               label="Termin Selection:"
-              data={static_termin}
+              data={termin_dropdown}
               setFunc={setTermins}
+              placeholder="Enter Termin"
             />
           </Grid>
         </Grid>
         <Grid container justify="center">
           <Grid item xs={6} className={styles.submit}>
-            <input type="submit" onClick={(e) => onSubmit(e)} />
+            <input type="submit" onClick={(e) => onSubmitHandler(e)} />
           </Grid>
           <Grid item xs={6} className={styles.clear}>
-            <input type="reset" onClick={onReset} />
+            <input type="reset" />
           </Grid>
         </Grid>
       </form>
@@ -150,4 +186,17 @@ export default function Home() {
       )}
     </>
   );
+}
+
+export async function getStaticProps() {
+  const res = await fetch(
+    "https://arvin-project.herokuapp.com/api/v1/resources/university?univer=all"
+  );
+  const data = await res.json();
+
+  return {
+    props: {
+      all_unis: data,
+    },
+  };
 }

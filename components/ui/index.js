@@ -3,4 +3,3 @@ export * from "./metaInfo";
 export * from "./input";
 export * from "./multipleSelect";
 export * from "./singleSelect";
-export * from "./allOne";
