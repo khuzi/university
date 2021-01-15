@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import Select from "react-select";
 
@@ -20,10 +20,26 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const MultipleSelect = ({ label, data, placeholder, setFunc }) => {
-  const onSetValues = (items) => {
-    const values = items.map(({ value }) => value);
+export const MultipleSelect = ({
+  label,
+  data,
+  placeholder,
+  setFunc,
+  reset,
+}) => {
+  const [val, setVal] = useState([]);
+
+  useEffect(() => {
+    if (reset) {
+      setVal([]);
+    }
+  }, [reset]);
+
+  const onSetValues = (item) => {
+    console.log(item);
+    const values = item.map(({ value }) => value);
     setFunc(values);
+    setVal(item);
   };
 
   const classes = useStyles();
@@ -34,6 +50,7 @@ export const MultipleSelect = ({ label, data, placeholder, setFunc }) => {
       <Select
         onChange={(e) => onSetValues(e)}
         placeholder={placeholder}
+        value={val}
         isMulti
         name="colors"
         options={data}

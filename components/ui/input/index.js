@@ -32,7 +32,6 @@ export function Input({ placeholder, label, setFunc }) {
         size="small"
         placeholder={placeholder}
         multiline
-        required
         onChange={(e) => setFunc(e.target.value)}
       />
     </div>

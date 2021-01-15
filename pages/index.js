@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 import { Grid } from "@material-ui/core";
 
@@ -18,6 +19,8 @@ import { fetch_result } from "../queries";
 import styles from "../styles/Home.module.css";
 
 export default function Home({ all_unis }) {
+  const router = useRouter();
+
   const [city, setCity] = useState();
   const [program, setProgram] = useState();
   const [points, setPoints] = useState();
@@ -26,6 +29,7 @@ export default function Home({ all_unis }) {
   const [termins, setTermins] = useState();
   const [unis, setUnis] = useState([]);
   const [result, setResult] = useState([]);
+  const [reset, setReset] = useState(false);
 
   useEffect(() => {
     addAllUnis();
@@ -50,8 +54,9 @@ export default function Home({ all_unis }) {
 
   const onSubmitHandler = (e) => {
     e.preventDefault();
-
-    if (!points) {
+    if (!program || !points) {
+      alert("First fill the form");
+    } else if (!points && (program, criteria, termins, uni)) {
       fetch_result(
         criteria,
         program,
@@ -61,7 +66,7 @@ export default function Home({ all_unis }) {
         "points_left",
         setResult
       );
-    } else if (!criteria) {
+    } else if (!criteria && (points, program, uni, termins)) {
       fetch_result(
         criteria,
         program,
@@ -71,7 +76,7 @@ export default function Home({ all_unis }) {
         "criteria_left",
         setResult
       );
-    } else if (uni === "allUnis") {
+    } else if ((uni === "allUnis") & (points, program, termins, criteria)) {
       fetch_result(
         criteria,
         program,
@@ -81,7 +86,7 @@ export default function Home({ all_unis }) {
         "all_unis",
         setResult
       );
-    } else if (termins.length === 2) {
+    } else if (termins.length === 2 && (points, program, criteria, uni)) {
       fetch_result(
         criteria,
         program,
@@ -91,7 +96,7 @@ export default function Home({ all_unis }) {
         "all_termins",
         setResult
       );
-    } else {
+    } else if ((criteria, program, points, uni, termins)) {
       fetch_result(
         criteria,
         program,
@@ -104,20 +109,24 @@ export default function Home({ all_unis }) {
     }
   };
 
-  useEffect(() => {
-    console.log("Result = ", result);
-  }, [result]);
+  const onResetHandler = () => {
+    setReset(true);
+    setTimeout(() => {
+      router.reload();
+    }, 50);
+  };
 
   return (
     <>
       <MetaInfo title="Home" />
-      <form>
+      <form onSubmit={onSubmitHandler}>
         <Grid container>
           <Grid item lg={4} md={4} xs={6}>
             <Input
               label="Program name:"
               placeholder="free text"
               setFunc={setProgram}
+              required
             />
           </Grid>
           <Grid item lg={4} md={4} xs={6}>
@@ -138,6 +147,7 @@ export default function Home({ all_unis }) {
               mainData={all_unis}
               setCity={setCity}
               setUni={setUni}
+              reset={reset}
             />
           </Grid>
           <Grid item lg={4} md={4} xs={6}>
@@ -146,6 +156,7 @@ export default function Home({ all_unis }) {
               data={cri_dropdown}
               setFunc={setCriteria}
               placeholder="Enter Criteria"
+              reset={reset}
             />
           </Grid>
           <Grid item lg={4} md={4} xs={6}>
@@ -154,6 +165,7 @@ export default function Home({ all_unis }) {
               data={termin_dropdown}
               setFunc={setTermins}
               placeholder="Enter Termin"
+              reset={reset}
             />
           </Grid>
         </Grid>
@@ -162,14 +174,14 @@ export default function Home({ all_unis }) {
             <input type="submit" onClick={(e) => onSubmitHandler(e)} />
           </Grid>
           <Grid item xs={6} className={styles.clear}>
-            <input type="reset" />
+            <input type="reset" onClick={onResetHandler} />
           </Grid>
         </Grid>
       </form>
       <div className={styles.divider} />
       {result.length > 0 && (
         <Grid container className={styles.result_box}>
-          <Grid item xs={6}>
+          <Grid item xs={12} md={6} lg={6}>
             <Left
               university={result[0].University}
               city={city}
@@ -177,9 +189,15 @@ export default function Home({ all_unis }) {
               edu_name={result[0].Program}
             />
           </Grid>
-          <Grid item xs={6}>
-            {result.map(({ Urvalgrupp, Points }, i) => (
-              <Right key={i} criteria={Urvalgrupp} points={Points} />
+          <Grid item xs={12} md={6} lg={6}>
+            {result.map((detail, i) => (
+              <Right
+                key={i}
+                criteria={detail.Urvalgrupp}
+                points={detail.Points}
+                city={city}
+                program_code={detail["Program Code"]}
+              />
             ))}
           </Grid>
         </Grid>

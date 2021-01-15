@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import Select from "react-select";
 
@@ -27,7 +27,16 @@ export const SingleSelect = ({
   mainData,
   setUni,
   setCity,
+  reset,
 }) => {
+  const [val, setVal] = useState([]);
+
+  useEffect(() => {
+    if (reset) {
+      setVal([]);
+    }
+  }, [reset]);
+
   const setParams = (e) => {
     let city = null;
     mainData.forEach((item) => {
@@ -40,7 +49,12 @@ export const SingleSelect = ({
         setUni("allUnis");
       }
     });
+    setVal([e]);
   };
+
+  useEffect(() => {
+    console.log("Val = ", val);
+  }, [val]);
 
   const classes = useStyles();
   return (
@@ -51,6 +65,7 @@ export const SingleSelect = ({
         options={data}
         placeholder={placeholder}
         onChange={setParams}
+        value={val}
       />
     </div>
   );
