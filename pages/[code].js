@@ -9,25 +9,33 @@ export default function ResultInfo({ cityData, historyData }) {
     <>
       <MetaInfo title="ResultInfo" />
       <div className={styles.result_info}>
-        <div className={styles.txt}>
-          <h3>City Name:</h3>
-          <p>{cityData["City Name"]}</p>
-        </div>
-        <div className={styles.txt}>
-          <h3>City Information:</h3>
-          <p>{cityData["City Info"]}</p>
-        </div>
-        <div style={{ display: "flex" }}>
-          <div className={styles.txt}>
-            <h3>Housing Data Index:</h3>
-            <p>{cityData["Housing Index"]}</p>
-          </div>
-          <div className={styles.txt}>
-            <h3>Cost of Living Index:</h3>
-            <p>{cityData["Cost Index"]}</p>
-          </div>
-        </div>
-        {historyData.reverse().map(({ Termin, Urvalsgrupp_lista }, i) => (
+        {cityData ? (
+          <>
+            <div className={styles.txt}>
+              <h3>City Name:</h3>
+              <p>{cityData["City Name"]}</p>
+            </div>
+            <div className={styles.txt}>
+              <h3>City Information:</h3>
+              <p>{cityData["City Info"]}</p>
+            </div>
+            <div style={{ display: "flex" }}>
+              <div className={styles.txt}>
+                <h3>Housing Data Index:</h3>
+                <p>{cityData["Housing Index"]}</p>
+              </div>
+              <div className={styles.txt}>
+                <h3>Cost of Living Index:</h3>
+                <p>{cityData["Cost Index"]}</p>
+              </div>
+            </div>
+          </>
+        ) : (
+          <h3 style={{ margin: "1rem 0", textAlign: "center" }}>
+            City Data Comming Soon.
+          </h3>
+        )}
+        {historyData?.reverse().map(({ Termin, Urvalsgrupp_lista }, i) => (
           <div className={styles.table} key={i}>
             <table>
               <tr>
@@ -57,15 +65,26 @@ export async function getServerSideProps({ query, params }) {
   const city = route[0];
   const program_code = route[1];
 
-  const res1 = await fetch(
-    `https://arvin-project.herokuapp.com/api/v1/resources/city?city=${city}`
-  );
-  const cityData = await res1.json();
+  let cityData = null;
+  let historyData = null;
 
-  const res2 = await fetch(
-    `https://arvin-project.herokuapp.com/api/v1/resources/history?utbild=${program_code}`
-  );
-  const historyData = await res2.json();
+  try {
+    const res1 = await fetch(
+      `https://arvin-project.herokuapp.com/api/v1/resources/city?city=${city}`
+    );
+    cityData = await res1.json();
+  } catch (error) {
+    console.log("Error in CityData");
+  }
+
+  try {
+    const res2 = await fetch(
+      `https://arvin-project.herokuapp.com/api/v1/resources/history?utbild=${program_code}`
+    );
+    historyData = await res2.json();
+  } catch (error) {
+    console.log("Error in HistoryData");
+  }
 
   return {
     props: {

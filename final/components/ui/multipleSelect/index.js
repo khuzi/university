@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: 200,
     [theme.breakpoints.down("sm")]: {
       margin: "0 0.5rem",
-      marginBottom: "3rem",
+      marginBottom: "1rem",
     },
   },
   label: {
@@ -20,13 +20,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const SingleSelect = ({
+export const MultipleSelect = ({
   label,
   data,
   placeholder,
-  mainData,
-  setUni,
-  setCity,
+  setFunc,
   reset,
 }) => {
   const [val, setVal] = useState([]);
@@ -37,31 +35,27 @@ export const SingleSelect = ({
     }
   }, [reset]);
 
-  const setParams = (e) => {
-    let city = null;
-    mainData.forEach((item) => {
-      if (item["School Name"] === e.value) {
-        city = item.City;
-        setCity(city);
-        setUni(e.value);
-      } else if (e.value === "allUnis") {
-        setCity("Stockholm");
-        setUni(null);
-      }
-    });
-    setVal([e]);
+  const onSetValues = (item) => {
+    console.log(item);
+    const values = item.map(({ value }) => value);
+    setFunc(values);
+    setVal(item);
   };
 
   const classes = useStyles();
+
   return (
     <div className={classes.root}>
       <label className={classes.label}>{label}</label>
       <Select
-        label="Single select"
-        options={data}
+        onChange={(e) => onSetValues(e)}
         placeholder={placeholder}
-        onChange={setParams}
         value={val}
+        isMulti
+        name="colors"
+        options={data}
+        className="basic-multi-select"
+        classNamePrefix="select"
       />
     </div>
   );

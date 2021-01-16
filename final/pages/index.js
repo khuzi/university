@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import Link from "next/link";
 
 import { Grid } from "@material-ui/core";
 
@@ -25,7 +24,7 @@ export default function Home({ all_unis }) {
   const [city, setCity] = useState();
   const [program, setProgram] = useState();
   const [points, setPoints] = useState();
-  const [uni, setUni] = useState();
+  const [uni, setUni] = useState([]);
   const [criteria, setCriteria] = useState();
   const [termins, setTermins] = useState();
   const [unis, setUnis] = useState([]);
@@ -55,17 +54,57 @@ export default function Home({ all_unis }) {
 
   const onSubmitHandler = (e) => {
     e.preventDefault();
-    if (!program) {
-      alert("Program Field is mandatory..");
-    } else {
+    if (!program || !points) {
+      alert("First fill the form");
+    } else if (!points && (program, criteria, termins, uni)) {
       fetch_result(
         criteria,
         program,
         points,
         uni,
         termins,
-        setResult,
-        all_unis
+        "points_left",
+        setResult
+      );
+    } else if (!criteria && (points, program, uni, termins)) {
+      fetch_result(
+        criteria,
+        program,
+        points,
+        uni,
+        termins,
+        "criteria_left",
+        setResult
+      );
+    } else if ((uni === "allUnis") & (points, program, termins, criteria)) {
+      fetch_result(
+        criteria,
+        program,
+        points,
+        uni,
+        termins,
+        "all_unis",
+        setResult
+      );
+    } else if (termins.length === 2 && (points, program, criteria, uni)) {
+      fetch_result(
+        criteria,
+        program,
+        points,
+        uni,
+        termins,
+        "all_termins",
+        setResult
+      );
+    } else if ((criteria, program, points, uni, termins)) {
+      fetch_result(
+        criteria,
+        program,
+        points,
+        uni,
+        termins,
+        "all_param",
+        setResult
       );
     }
   };
@@ -95,7 +134,6 @@ export default function Home({ all_unis }) {
               label="Your Grade:"
               placeholder="Enter Points"
               setFunc={setPoints}
-              type="number"
             />
           </Grid>
         </Grid>
@@ -142,38 +180,26 @@ export default function Home({ all_unis }) {
       </form>
       <div className={styles.divider} />
       {result.length > 0 && (
-        <Grid container className={styles.result_box} justify="space-around">
-          {result.map((items, key) => (
-            <React.Fragment key={key}>
-              <Link
-                href={`/[code]`}
-                as={`/${items[items.length - 1]}_${items[0]["Program Code"]}`}
-              >
-                <Grid item xs={10} md={5} lg={5} style={{ margin: "0.5rem 0" }}>
-                  <Left
-                    university={items[0].University}
-                    city={items[items.length - 1]}
-                    edu_code={items[0]["Program Code"]}
-                    edu_name={items[0].Program}
-                  />
-                </Grid>
-              </Link>
-              <Grid item xs={10} md={5} lg={5} style={{ margin: "0.5rem 0" }}>
-                {items.map(
-                  (detail, i) =>
-                    i !== items.length - 1 && (
-                      <Right
-                        key={i}
-                        criteria={detail.Urvalgrupp}
-                        points={detail.Points}
-                        city={items[items.length - 1]}
-                        program_code={detail["Program Code"]}
-                      />
-                    )
-                )}
-              </Grid>
-            </React.Fragment>
-          ))}
+        <Grid container className={styles.result_box}>
+          <Grid item xs={12} md={6} lg={6}>
+            <Left
+              university={result[0].University}
+              city={city}
+              edu_code={result[0]["Program Code"]}
+              edu_name={result[0].Program}
+            />
+          </Grid>
+          <Grid item xs={12} md={6} lg={6}>
+            {result.map((detail, i) => (
+              <Right
+                key={i}
+                criteria={detail.Urvalgrupp}
+                points={detail.Points}
+                city={city}
+                program_code={detail["Program Code"]}
+              />
+            ))}
+          </Grid>
         </Grid>
       )}
     </>

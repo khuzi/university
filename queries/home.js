@@ -4,46 +4,45 @@ export const fetch_result = async (
   points,
   uni,
   termin,
-  type,
-  setFunc
+  setFunc,
+  unis_cities
 ) => {
-  let url = null;
-  switch (type) {
-    case "all_param":
-      url = `https://arvin-project.herokuapp.com/api/v1/resources/multi_choice?urval=${criteria.join(
-        ","
-      )}&utbild=${program}&points=${points}&
-      skol=${uni}&termin=${termin}`;
-      break;
-    case "points_left":
-      url = `https://arvin-project.herokuapp.com/api/v1/resources/multi_choice?urval=${criteria.join(
-        ","
-      )}&utbild=${program}&skol=${uni}&termin=${termin}`;
-      break;
-    case "criteria_left":
-      url = `https://arvin-project.herokuapp.com/api/v1/resources/multi_choice?utbild=${program}&points=${points}&skol=${uni}&termin=${termin}`;
-      break;
-    case "all_unis":
-      url = `https://arvin-project.herokuapp.com/api/v1/resources/multi_choice?urval=${criteria.join(
-        ","
-      )}&utbild=${program}&points=${points}&termin=${termin}`;
-      break;
-    case "all_termins":
-      url = `https://arvin-project.herokuapp.com/api/v1/resources/multi_choice?urval=${criteria.join(
-        ","
-      )}&utbild=${program}&points=${points}`;
-      break;
-    default:
-      break;
-  }
-
-  console.log("URL = ", url);
+  const url = `https://arvin-project.herokuapp.com/api/v1/resources/multi_choice?${
+    criteria ? `urval=${criteria.join(",")}` : ""
+  }&utbild=${program}${points ? `&points=${points}` : ""}${
+    uni ? `&skol=${uni}` : ""
+  }${termin ? `&termin=${termin}` : ""}`;
 
   try {
     const res = await fetch(url);
-    const data = await res.json();
-    setFunc(data);
+    let data = [];
+    data = await res.json();
+
+    const codes = data.map((arr) => arr["Program Code"]);
+    const filter_codes = [...new Set(codes)];
+
+    const final_data = [];
+    filter_codes.forEach((item) => {
+      let temp = data.filter((inner_item) => {
+        return inner_item["Program Code"] === item;
+      });
+      if (temp.length > 0) {
+        let city = null;
+        unis_cities.forEach((uc) => {
+          if (uc["School Name"] === temp[0].University) {
+            city = uc.City;
+          }
+        });
+
+        final_data.push([...temp, city]);
+      }
+      temp = [];
+    });
+    setFunc(final_data);
+    window.scrollTo(0, document.body.scrollHeight);
   } catch (error) {
     console.log("Error in RestApi of Main Page");
+    setFunc([]);
+    alert("Results Not Found");
   }
 };

@@ -46,11 +46,15 @@ export const SingleSelect = ({
         setUni(e.value);
       } else if (e.value === "allUnis") {
         setCity("Stockholm");
-        setUni(null);
+        setUni("allUnis");
       }
     });
     setVal([e]);
   };
+
+  useEffect(() => {
+    console.log("Val = ", val);
+  }, [val]);
 
   const classes = useStyles();
   return (

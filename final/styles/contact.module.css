@@ -1,0 +1,40 @@
+.form_field {
+  display: flex;
+  flex-flow: column;
+  margin-top: 1rem;
+}
+
+.form_field label {
+  font-size: 15px;
+  margin-bottom: 0.5rem;
+}
+
+.form_field input {
+  width: 50%;
+  border-radius: 5px;
+  outline: none;
+  padding: 1rem;
+  border: 1px solid #888;
+}
+
+.form_field textarea {
+  width: 50%;
+  border-radius: 5px;
+  outline: none;
+  height: 300px;
+  resize: none;
+  padding: 1rem;
+}
+
+.submit input {
+  background: var(--primary-color);
+  border: none;
+  outline: none;
+  color: #fff;
+  width: 20%;
+  padding: 1rem 0;
+  border-radius: 5px;
+  cursor: pointer;
+  display: block;
+  margin-top: 1rem;
+}

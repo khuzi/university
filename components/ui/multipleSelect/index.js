@@ -36,7 +36,6 @@ export const MultipleSelect = ({
   }, [reset]);
 
   const onSetValues = (item) => {
-    console.log(item);
     const values = item.map(({ value }) => value);
     setFunc(values);
     setVal(item);

@@ -1,23 +1,16 @@
 import React from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
+import TextField from "@material-ui/core/TextField";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    maxWidth: 200,
+    "& .MuiTextField-root": {
+      maxWidth: 200,
+    },
     [theme.breakpoints.down("sm")]: {
       margin: "0 0.5rem",
       marginBottom: "1rem",
-    },
-  },
-  input: {
-    padding: "0.7rem",
-    width: "100%",
-    borderRadius: "5px",
-    border: "1px solid #ccc",
-    outline: "none",
-    "&:focus": {
-      border: "2px solid var(--primary-color)",
     },
   },
   label: {
@@ -28,16 +21,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export function Input({ placeholder, label, setFunc, type }) {
+export function Input({ placeholder, label, setFunc }) {
   const classes = useStyles();
   return (
     <div className={classes.root} noValidate autoComplete="off">
       <label className={classes.label}>{label}</label>
-      <input
-        className={classes.input}
+      <TextField
+        id="outlined-size-small"
+        variant="outlined"
+        size="small"
         placeholder={placeholder}
+        multiline
         onChange={(e) => setFunc(e.target.value)}
-        type={type}
       />
     </div>
   );
