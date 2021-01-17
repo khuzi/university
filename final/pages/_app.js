@@ -30,17 +30,6 @@ function MyApp({ Component, pageProps }) {
     router.events.on("routeChangeStart", handleRouteChange);
     router.events.on("routeChangeComplete", handleRouteComplete);
 
-    window.onbeforeunload = function (e) {
-      window.onunload = function () {
-        window.localStorage.isMySessionActive = "false";
-      };
-      return undefined;
-    };
-
-    window.onload = function () {
-      window.localStorage.isMySessionActive = "true";
-    };
-
     return () => {
       router.events.off("routeChangeStart", () => handleRouteChange);
       router.events.off("routeChangeStart", () => handleRouteComplete);

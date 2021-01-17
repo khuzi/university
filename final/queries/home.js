@@ -8,7 +8,6 @@ export const fetch_result = async (
   unis_cities
 ) => {
   localStorage.clear();
-
   criteria && localStorage.setItem("cl", criteria);
   program && localStorage.setItem("prl", program);
   points && localStorage.setItem("pol", points);

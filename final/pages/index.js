@@ -34,13 +34,6 @@ export default function Home({ all_unis }) {
 
   useEffect(() => {
     addAllUnis();
-    window.onbeforeunload = function (e) {
-      window.onunload = function () {
-        window.localStorage.clear();
-      };
-      return undefined;
-    };
-
     const { cl, prl, unil, terminl, pol } = localStorage;
     if (program || prl) {
       fetch_result(cl, prl, pol, unil, terminl, setResult, all_unis);
