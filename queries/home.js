@@ -7,11 +7,21 @@ export const fetch_result = async (
   setFunc,
   unis_cities
 ) => {
+  localStorage.clear();
+  criteria && localStorage.setItem("cl", criteria);
+  program && localStorage.setItem("prl", program);
+  points && localStorage.setItem("pol", points);
+  uni && localStorage.setItem("unil", uni);
+  termin && localStorage.setItem("terminl", termin);
+
   const url = `https://arvin-project.herokuapp.com/api/v1/resources/multi_choice?${
-    criteria ? `urval=${criteria.join(",")}` : ""
+    criteria ? `urval=${criteria}` : ""
   }&utbild=${program}${points ? `&points=${points}` : ""}${
     uni ? `&skol=${uni}` : ""
   }${termin ? `&termin=${termin}` : ""}`;
+
+  console.log("LocalStorage = ", localStorage);
+  console.log("URL = ", url);
 
   try {
     const res = await fetch(url);

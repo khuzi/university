@@ -62,7 +62,7 @@ export async function getServerSideProps({ query, params }) {
   const { code } = query || params;
 
   const route = code.split("_");
-  const city = route[0];
+  const city = encodeURIComponent(route[0]);
   const program_code = route[1];
 
   let cityData = null;

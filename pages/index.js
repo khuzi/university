@@ -34,6 +34,10 @@ export default function Home({ all_unis }) {
 
   useEffect(() => {
     addAllUnis();
+    const { cl, prl, unil, terminl, pol } = localStorage;
+    if (program || prl) {
+      fetch_result(cl, prl, pol, unil, terminl, setResult, all_unis);
+    }
   }, []);
 
   const addAllUnis = () => {
@@ -149,12 +153,18 @@ export default function Home({ all_unis }) {
                 href={`/[code]`}
                 as={`/${items[items.length - 1]}_${items[0]["Program Code"]}`}
               >
-                <Grid item xs={10} md={5} lg={5} style={{ margin: "0.5rem 0" }}>
+                <Grid
+                  item
+                  xs={10}
+                  md={5}
+                  lg={6}
+                  style={{ margin: "0.5rem 0", cursor: "pointer" }}
+                >
                   <Left
                     university={items[0].University}
                     city={items[items.length - 1]}
                     edu_code={items[0]["Program Code"]}
-                    edu_name={items[0].Program}
+                    edu_name={items[0].Utbildning}
                   />
                 </Grid>
               </Link>
